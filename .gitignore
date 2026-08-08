@@ -1,0 +1,21 @@
+# Data (user-provided locally)
+insta/*
+!insta/.gitkeep
+private_data/*
+!private_data/.gitkeep
+public_data/*
+!public_data/.gitkeep
+
+# Trained weights
+training/adapters_01/*
+!training/adapters_01/.gitkeep
+*.safetensors
+
+# OS / IDE
+.DS_Store
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.env

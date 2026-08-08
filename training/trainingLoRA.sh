@@ -1,0 +1,13 @@
+mlx_lm.lora \
+  --model /Users/praneel/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit \
+  --train \
+  --data /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/public_data \
+  --adapter-path /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/training/adapters_01 \
+  --batch-size 4 \
+  --iters 2000 \
+  --learning-rate 1e-5 \
+  --steps-per-report 10 \
+  --steps-per-eval 50 \
+  --save-every 100 \
+  --val-batches 25 \
+  --mask-prompt
