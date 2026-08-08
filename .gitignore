@@ -7,9 +7,8 @@ public_data/*
 !public_data/.gitkeep
 
 # Trained weights
-training/adapters_01/*
-!training/adapters_01/.gitkeep
-*.safetensors
+training/adapters_01/adapter_config.json*
+!training/adapters_01/adapter_config.json.gitkeep
 
 # OS / IDE
 .DS_Store
