@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-"""
-Clean generation - only outputs the response.
-"""
 import os
 from pathlib import Path
 
