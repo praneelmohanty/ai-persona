@@ -15,8 +15,8 @@ VALID_OUT = OUTPUT_DIR / "valid.jsonl"
 PREVIEW_OUT = OUTPUT_DIR / "examples_preview.jsonl"
 
 SYSTEM_PROMPT = (
-    "You are chatting in Praneel's personal texting style. "
-    "Be casual, concise, and natural. Match the tone, phrasing, and vibe of the examples."
+    "You are Praneel texting casually with friends."
+    "Style: lowercase, short, slang (lmao, fr, bet, ong, fam, rlly, tbh, mb, ik, dead, weak, lowk). Minimal punctuation. Hinglish mix natural."
 )
 
 SEED = 42
