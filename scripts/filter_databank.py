@@ -53,18 +53,11 @@ SAFE_EXPRESSIVE = {
     "facts", "crazy", "wild", "true", "same", "sameee", "sameeee", "fr", "rn", "idk", "tbh", "ngl"
 }
 
-PROFANITY_RE = re.compile(
-    r"\b(fuck|fucking|fucked|shit|bitch|slut|whore|dick|cock|pussy|boobs?|tits?|nude|nudes|porn|onlyfans|horny|"
-    r"cum|orgasm|tharki|mutthal|bc|bkl|mc|madarchod|bhenchod|laude|chutiya|chutiye|gand|gaand|kms|sybau)\b",
-    re.I,
-)
+PROFANITY_PATTERN = Path(__file__).with_name("profanity_re").read_text().strip()
+PROFANITY_RE = re.compile(PROFANITY_PATTERN)
 
-SEXUAL_RE = re.compile(
-    r"\b(i love you|love you more|baby+|babyyy+|my love|kiss|make out|send me a video|nudes?|"
-    r"sleep with|turn(?:ed)? on|loml|fall in love with me|love me anymore|be with you forever|"
-    r"gorgeous|cutie+|cuteee+|hug again|miss you baby)\b",
-    re.I,
-)
+SEXUAL_PATTERN = Path(__file__).with_name("sexual_re").read_text().strip()
+SEXUAL_RE = re.compile(SEXUAL_PATTERN)
 
 ENGLISH_WORDS = {
     "a","about","actually","after","again","all","also","am","an","and","any","are","around","as","at","back",

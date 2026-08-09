@@ -5,6 +5,10 @@ private_data/*
 !private_data/.gitkeep
 public_data/*
 !public_data/.gitkeep
+initial_train/*
+!initial_train/.gitkeep
+scripts/profanity_re*
+scripts/sexual_re*
 
 # Trained weights
 training/adapters_01/adapter_config.json*

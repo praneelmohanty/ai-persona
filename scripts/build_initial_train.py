@@ -9,7 +9,7 @@ from typing import Any
 
 BASE_DIR = Path("/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice")
 INPUT_PATH = BASE_DIR / "private_data" / "style_bank_hybrid_filtered.jsonl"
-OUTPUT_DIR = BASE_DIR / "public_data"
+OUTPUT_DIR = BASE_DIR / "initial_train"
 TRAIN_OUT = OUTPUT_DIR / "train.jsonl"
 VALID_OUT = OUTPUT_DIR / "valid.jsonl"
 PREVIEW_OUT = OUTPUT_DIR / "examples_preview.jsonl"
