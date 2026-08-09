@@ -11,6 +11,8 @@ scripts/profanity_re*
 scripts/profanity_re*.gitkeep
 scripts/personal_re*
 !scripts/personal_re*.gitkeep
+paths.env*
+paths.env*.gitkeep
 
 # Trained weights
 training/adapters_01/adapter_config.json*

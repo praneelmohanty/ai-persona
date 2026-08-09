@@ -2,22 +2,25 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import unicodedata
 from collections import Counter
 from pathlib import Path
 from typing import Any
 from openai import OpenAI
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / "paths.env")
 
-INPUT_PATH = BASE_DIR / "private_data" / "databank.jsonl"
-OUTPUT_KEEP = BASE_DIR / "private_data" / "style_bank_hybrid_filtered.jsonl"
-OUTPUT_REJECT = BASE_DIR / "private_data" / "style_bank_hybrid_rejects.jsonl"
-OUTPUT_AUDIT = BASE_DIR / "private_data" / "style_bank_hybrid_audit.jsonl"
+INPUT_PATH = Path(os.getenv("DATABANK_INPUT"))
+OUTPUT_KEEP = Path(os.getenv("FILTERED_OUTPUT"))
+OUTPUT_REJECT = Path(os.getenv("REJECTS_OUTPUT"))
+OUTPUT_AUDIT = Path(os.getenv("AUDIT_OUTPUT"))
 
-MODEL = "llama-3.1-8b-instruct"
-client = OpenAI(base_url="http://127.0.0.1:1234/v1", api_key="lmstudio")
+MODEL = os.getenv("LM_STUDIO_MODEL", "llama-3.1-8b-instruct")
+client = OpenAI(base_url=os.getenv("LM_STUDIO_URL", "http://127.0.0.1:1234/v1"), api_key="lmstudio")
 
 URL_RE = re.compile(r"(?:https?://\S+|www\.\S+|\b[a-z0-9.-]+\.(?:com|org|net|edu|gov|io|gg|tv|me|co|in)(?:/\S*)?\b)", re.I)
 TOKEN_RE = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)?")
@@ -52,10 +55,10 @@ SAFE_EXPRESSIVE = {
     "facts", "crazy", "wild", "true", "same", "sameee", "sameeee", "fr", "rn", "idk", "tbh", "ngl"
 }
 
-PROFANITY_PATTERN = Path(__file__).with_name("profanity_re").read_text().strip()
+PROFANITY_PATTERN = Path(os.getenv("PROFANITY_RE")).read_text().strip() #Write a RegEx flags to ignore any profanity in your chats
 PROFANITY_RE = re.compile(PROFANITY_PATTERN)
 
-PERSONAL_PATTERN = Path(__file__).with_name("personal_re").read_text().strip()
+PERSONAL_PATTERN = Path(os.getenv("PERSONAL_RE")).read_text().strip() #Write a RegEx flags to ignore any personal information in your chats
 PERSONAL_RE = re.compile(PERSONAL_PATTERN)
 
 ENGLISH_WORDS = {

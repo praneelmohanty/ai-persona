@@ -2,16 +2,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / "paths.env")
 
 DEFAULT_ME = "Praneel"
-DEFAULT_INPUT_ROOT = Path("/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/insta")
-DEFAULT_OUTPUT_PATH = Path("/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/private_data/instagram_data_bank.jsonl")
+DEFAULT_INPUT_ROOT = Path(os.getenv("INSTA_DIR"))
+DEFAULT_OUTPUT_PATH = Path(os.getenv("DATABANK_OUTPUT"))
 
 SKIP_EXACT = {
     "liked a message",

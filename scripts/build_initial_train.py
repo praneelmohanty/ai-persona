@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+from dotenv import load_dotenv
 
-BASE_DIR = Path("/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice")
-INPUT_PATH = BASE_DIR / "private_data" / "style_bank_hybrid_filtered.jsonl"
-OUTPUT_DIR = BASE_DIR / "initial_train"
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / "paths.env")
+
+INPUT_PATH = Path(os.getenv("FILTERED_OUTPUT"))
+OUTPUT_DIR = Path(os.getenv("INITIAL_TRAIN_DIR"))
 TRAIN_OUT = OUTPUT_DIR / "train.jsonl"
 VALID_OUT = OUTPUT_DIR / "valid.jsonl"
 PREVIEW_OUT = OUTPUT_DIR / "examples_preview.jsonl"

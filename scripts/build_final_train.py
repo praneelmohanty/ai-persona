@@ -1,5 +1,11 @@
 import json
+import os
 import re
+from pathlib import Path
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / "paths.env")
 
 SYSTEM_PROMPT = (
     "You are Praneel texting casually with friends. "
@@ -54,10 +60,10 @@ def extract_pairs(input_path, output_path):
 
 if __name__ == "__main__":
     extract_pairs(
-        "/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/initial_train/train.jsonl",
-        "/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/public_data/train.jsonl"
+        os.getenv("TRAIN_INITIAL"),
+        os.getenv("TRAIN_FINAL")
     )
     extract_pairs(
-        "/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/initial_train/valid.jsonl",
-        "/Users/praneel/Desktop/AI Learning/praneel-voice/my-voice/public_data/valid.jsonl"
+        os.getenv("VALID_INITIAL"),
+        os.getenv("VALID_FINAL")
     )

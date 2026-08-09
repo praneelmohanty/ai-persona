@@ -18,6 +18,13 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+Set up your paths by copying the example and editing it:
+
+```bash
+cp paths.env.example paths.env
+# Edit paths.env with your actual paths
+```
+
 Set the base model path if yours differs from the default:
 
 ```bash
@@ -31,6 +38,8 @@ my-voice/
 ├── insta/                  # Raw Instagram DM exports (local only)
 ├── private_data/           # Processed databank + filtered messages (local only)
 ├── public_data/            # train.jsonl + valid.jsonl (local only)
+├── paths.env               # Your local paths (gitignored)
+├── paths.env.example       # Template for paths.env
 ├── scripts/
 │   ├── build_databank.py         # Step 1: raw JSON → databank
 │   ├── filter_databank.py        # Step 2: filter via LM Studio

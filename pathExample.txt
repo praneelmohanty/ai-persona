@@ -1,0 +1,36 @@
+# Project root
+PROJECT_ROOT=/path/to/your/my-voice
+
+# Data directories
+INSTA_DIR=/path/to/your/my-voice/insta
+PRIVATE_DATA_DIR=/path/to/your/my-voice/private_data
+PUBLIC_DATA_DIR=/path/to/your/my-voice/public_data
+INITIAL_TRAIN_DIR=/path/to/your/my-voice/initial_train
+TRAINING_DIR=/path/to/your/my-voice/training
+
+# Model paths
+MODEL_PATH=/path/to/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit
+ADAPTER_PATH=/path/to/your/my-voice/training/adapters_01
+SYSTEM_PROMPT_PATH=/path/to/your/my-voice/training/system_prompt.txt
+
+# Data files - Databank
+DATABANK_INPUT=/path/to/your/my-voice/private_data/databank.jsonl
+DATABANK_OUTPUT=/path/to/your/my-voice/private_data/instagram_data_bank.jsonl
+FILTERED_OUTPUT=/path/to/your/my-voice/private_data/style_bank_hybrid_filtered.jsonl
+REJECTS_OUTPUT=/path/to/your/my-voice/private_data/style_bank_hybrid_rejects.jsonl
+AUDIT_OUTPUT=/path/to/your/my-voice/private_data/style_bank_hybrid_audit.jsonl
+
+# Data files - Training
+TRAIN_INITIAL=/path/to/your/my-voice/initial_train/train.jsonl
+VALID_INITIAL=/path/to/your/my-voice/initial_train/valid.jsonl
+PREVIEW_OUTPUT=/path/to/your/my-voice/initial_train/examples_preview.jsonl
+TRAIN_FINAL=/path/to/your/my-voice/public_data/train.jsonl
+VALID_FINAL=/path/to/your/my-voice/public_data/valid.jsonl
+
+# Regex files
+PROFANITY_RE=/path/to/your/my-voice/scripts/profanity_re
+PERSONAL_RE=/path/to/your/my-voice/scripts/personal_re
+
+# LM Studio
+LM_STUDIO_URL=http://127.0.0.1:1234/v1
+LM_STUDIO_MODEL=llama-3.1-8b-instruct

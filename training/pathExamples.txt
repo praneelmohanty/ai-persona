@@ -1,0 +1,3 @@
+export MODEL="/path/to/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit"
+export DATA="/path/to/your/my-voice/public_data"
+export ADAPTER="/path/to/your/my-voice/training/adapters_01"

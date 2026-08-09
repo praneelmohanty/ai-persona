@@ -1,17 +1,18 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 import mlx.core as mx
 from mlx_lm import load
 from mlx_lm.sample_utils import make_sampler
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-MODEL = os.environ.get(
-    "MODEL",
-    os.path.expanduser("~/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit"),
-)
-ADAPTER = BASE_DIR / "training" / "adapters_01"
-SYSTEM_PROMPT_PATH = BASE_DIR / "training" / "system_prompt.txt"
+load_dotenv(BASE_DIR / "paths.env")
+
+MODEL = os.getenv("MODEL_PATH")
+ADAPTER = Path(os.getenv("ADAPTER_PATH"))
+SYSTEM_PROMPT_PATH = Path(os.getenv("SYSTEM_PROMPT_PATH"))
 
 with open(SYSTEM_PROMPT_PATH) as f:
     SYSTEM_PROMPT = f.read().strip()
