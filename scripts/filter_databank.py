@@ -260,7 +260,7 @@ def is_obvious_reject(text: str) -> tuple[bool, str | None]:
         return True, "personal_info"
     if PROFANITY_RE.search(t):
         return True, "profanity"
-    if SEXUAL_RE.search(t):
+    if PERSONAL_RE.search(t):
         return True, "sexual_or_intimate"
     if hindi_ratio(toks) > 0:
         return True, "contains_hindi_or_hinglish"
