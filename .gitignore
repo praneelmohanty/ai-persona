@@ -15,7 +15,7 @@ training/adapters_01/adapter_config.json*
 !training/adapters_01/adapter_config.json.gitkeep
 training/system_prompt.txt*
 !training/system_prompt.txt.gitkeep
-training/path.sh*
+training/paths.sh*
 !training/paths.sh.gitkeep
 
 # OS / IDE
