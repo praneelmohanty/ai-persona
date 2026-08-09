@@ -1,8 +1,10 @@
+source /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/training/paths.sh
+
 mlx_lm.lora \
-  --model /Users/praneel/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit \
+  --model "$MODEL" \
   --train \
-  --data /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/public_data \
-  --adapter-path /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/training/adapters_01 \
+  --data "$DATA" \
+  --adapter-path "$ADAPTER" \
   --batch-size 4 \
   --iters 2000 \
   --learning-rate 1e-5 \
