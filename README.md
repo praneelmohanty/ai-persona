@@ -32,14 +32,18 @@ my-voice/
 ├── private_data/           # Processed databank + filtered messages (local only)
 ├── public_data/            # train.jsonl + valid.jsonl (local only)
 ├── scripts/
-│   ├── build_databank.py   # Step 1: raw JSON → databank
-│   ├── filter_databank.py  # Step 2: filter via LM Studio
-│   ├── build_training.py   # Step 3: build train/valid sets
-│   └── main.py             # Step 5: interactive inference
+│   ├── build_databank.py         # Step 1: raw JSON → databank
+│   ├── filter_databank.py        # Step 2: filter via LM Studio
+│   ├── build_initial_train.py    # Step 3a: build initial train/valid
+│   ├── build_final_train.py      # Step 3b: refine into final format
+│   ├── profanity_re              # (local only) regex patterns for filtering
+│   ├── personal_re                 # (local only) regex patterns for filtering
+│   └── main.py                   # Step 5: interactive inference
 └── training/
-    ├── trainingLoRA.sh     # Step 4: LoRA training
-    ├── system_prompt.txt   # System prompt for inference
-    └── adapters_01/        # Trained LoRA weights (local only)
+    ├── trainingLoRA.sh           # Step 4: LoRA training
+    ├── system_prompt.txt         # (local only) system prompt for inference
+    ├── paths.sh                  # (local only) model/data paths
+    └── adapters_01/              # Trained LoRA weights (local only)
 ```
 
 ## Pipeline
@@ -49,7 +53,8 @@ my-voice/
 | 1 | Export Instagram DMs into `insta/` | `message_*.json` per chat |
 | 2 | `python scripts/build_databank.py` | `private_data/databank.jsonl` |
 | 3 | Start LM Studio, then `python scripts/filter_databank.py` | `private_data/style_bank_hybrid_filtered.jsonl` |
-| 4 | `python scripts/build_training.py` | `public_data/train.jsonl`, `public_data/valid.jsonl` |
+| 4a | `python scripts/build_initial_train.py` | `initial_train/train.jsonl`, `initial_train/valid.jsonl` |
+| 4b | `python scripts/build_final_train.py` | `public_data/train.jsonl`, `public_data/valid.jsonl` |
 | 5 | `bash training/trainingLoRA.sh` | `training/adapters_01/` |
 | 6 | `python scripts/main.py` | Interactive chat |
 
@@ -81,13 +86,21 @@ python scripts/filter_databank.py
 
 Uses rule-based filters plus an LLM pass to keep English, style-useful messages and reject noise, PII, and inappropriate content.
 
-### Step 4: Build training data
+### Step 4a: Build initial training data
 
 ```bash
-python scripts/build_training.py
+python scripts/build_initial_train.py
 ```
 
-Converts filtered messages into chat-format examples (system / user / assistant turns) and splits into train (90%) and valid (10%).
+Converts filtered messages into chat-format examples (system / user / assistant turns) and splits into train (90%) and valid (10%). Outputs to `initial_train/`.
+
+### Step 4b: Build final training data
+
+```bash
+python scripts/build_final_train.py
+```
+
+Refines the initial train/valid sets by adding the system prompt and filtering by message length. Outputs to `public_data/`.
 
 Example `train.jsonl` line:
 
@@ -110,6 +123,17 @@ python scripts/main.py
 ```
 
 Loads the base model + LoRA adapter and generates a reply using `training/system_prompt.txt`.
+
+## Local-only files (gitignored)
+
+These files contain personal or project-specific data and are not committed. Create them locally as needed:
+
+| File | Purpose |
+|------|---------|
+| `scripts/profanity_re` | Regex pattern for profanity detection in `filter_databank.py` |
+| `scripts/personal_re` | Regex pattern for intimate content detection in `filter_databank.py` |
+| `training/system_prompt.txt` | System prompt defining your texting persona for inference |
+| `training/paths.sh` | Environment variables for model/data/adapter paths |
 
 ## Privacy
 

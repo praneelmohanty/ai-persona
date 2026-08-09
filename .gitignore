@@ -8,7 +8,9 @@ public_data/*
 initial_train/*
 !initial_train/.gitkeep
 scripts/profanity_re*
-scripts/sexual_re*
+scripts/profanity_re*.gitkeep
+scripts/personal_re*
+!scripts/personal_re*.gitkeep
 
 # Trained weights
 training/adapters_01/adapter_config.json*

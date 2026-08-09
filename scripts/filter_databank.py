@@ -56,8 +56,8 @@ SAFE_EXPRESSIVE = {
 PROFANITY_PATTERN = Path(__file__).with_name("profanity_re").read_text().strip()
 PROFANITY_RE = re.compile(PROFANITY_PATTERN)
 
-SEXUAL_PATTERN = Path(__file__).with_name("sexual_re").read_text().strip()
-SEXUAL_RE = re.compile(SEXUAL_PATTERN)
+PERSONAL_PATTERN = Path(__file__).with_name("personal_re").read_text().strip()
+PERSONAL_RE = re.compile(PERSONAL_PATTERN)
 
 ENGLISH_WORDS = {
     "a","about","actually","after","again","all","also","am","an","and","any","are","around","as","at","back",
