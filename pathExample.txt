@@ -1,35 +1,35 @@
 # Project root
-PROJECT_ROOT=/Users/yourname/my-voice
+PROJECT_ROOT=/Users/yourname/ai-persona
 
 # Data directories
-INSTA_DIR=/Users/yourname/my-voice/insta
-PRIVATE_DATA_DIR=/Users/yourname/my-voice/private_data
-PUBLIC_DATA_DIR=/Users/yourname/my-voice/public_data
-INITIAL_TRAIN_DIR=/Users/yourname/my-voice/initial_train
-TRAINING_DIR=/Users/yourname/my-voice/training
+INSTA_DIR=/Users/yourname/ai-persona/insta
+PRIVATE_DATA_DIR=/Users/yourname/ai-persona/private_data
+PUBLIC_DATA_DIR=/Users/yourname/ai-persona/public_data
+INITIAL_TRAIN_DIR=/Users/yourname/ai-persona/initial_train
+TRAINING_DIR=/Users/yourname/ai-persona/training
 
 # Model paths
 MODEL_PATH=/Users/yourname/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit
-ADAPTER_PATH=/Users/yourname/my-voice/training/adapters_01
-SYSTEM_PROMPT_PATH=/Users/yourname/my-voice/training/system_prompt.txt
+ADAPTER_PATH=/Users/yourname/ai-persona/training/adapters_01
+SYSTEM_PROMPT_PATH=/Users/yourname/ai-persona/training/system_prompt.txt
 
 # Data files - Databank
-DATABANK_INPUT=/Users/yourname/my-voice/private_data/databank.jsonl
-DATABANK_OUTPUT=/Users/yourname/my-voice/private_data/instagram_data_bank.jsonl
-FILTERED_OUTPUT=/Users/yourname/my-voice/private_data/style_bank_hybrid_filtered.jsonl
-REJECTS_OUTPUT=/Users/yourname/my-voice/private_data/style_bank_hybrid_rejects.jsonl
-AUDIT_OUTPUT=/Users/yourname/my-voice/private_data/style_bank_hybrid_audit.jsonl
+DATABANK_INPUT=/Users/yourname/ai-persona/private_data/databank.jsonl
+DATABANK_OUTPUT=/Users/yourname/ai-persona/private_data/instagram_data_bank.jsonl
+FILTERED_OUTPUT=/Users/yourname/ai-persona/private_data/style_bank_hybrid_filtered.jsonl
+REJECTS_OUTPUT=/Users/yourname/ai-persona/private_data/style_bank_hybrid_rejects.jsonl
+AUDIT_OUTPUT=/Users/yourname/ai-persona/private_data/style_bank_hybrid_audit.jsonl
 
 # Data files - Training
-TRAIN_INITIAL=/Users/yourname/my-voice/initial_train/train.jsonl
-VALID_INITIAL=/Users/yourname/my-voice/initial_train/valid.jsonl
-PREVIEW_OUTPUT=/Users/yourname/my-voice/initial_train/examples_preview.jsonl
-TRAIN_FINAL=/Users/yourname/my-voice/public_data/train.jsonl
-VALID_FINAL=/Users/yourname/my-voice/public_data/valid.jsonl
+TRAIN_INITIAL=/Users/yourname/ai-persona/initial_train/train.jsonl
+VALID_INITIAL=/Users/yourname/ai-persona/initial_train/valid.jsonl
+PREVIEW_OUTPUT=/Users/yourname/ai-persona/initial_train/examples_preview.jsonl
+TRAIN_FINAL=/Users/yourname/ai-persona/public_data/train.jsonl
+VALID_FINAL=/Users/yourname/ai-persona/public_data/valid.jsonl
 
 # Regex files
-PROFANITY_RE=/Users/yourname/my-voice/scripts/profanity_re
-PERSONAL_RE=/Users/yourname/my-voice/scripts/personal_re
+PROFANITY_RE=/Users/yourname/ai-persona/scripts/profanity_re
+PERSONAL_RE=/Users/yourname/ai-persona/scripts/personal_re
 
 # LM Studio
 LM_STUDIO_URL=http://127.0.0.1:1234/v1

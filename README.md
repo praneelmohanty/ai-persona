@@ -1,6 +1,6 @@
-# my-voice
+# ai-persona
 
-My-voice allows you to fine-tune an MLX-based Llama 3.1 8B model on your personal texting style using Instagram DM data, MLX LoRA and LM Studio.
+Ai-persona allows you to fine-tune an MLX-based Llama 3.1 8B model on your personal texting style using Instagram DM data, MLX LoRA and LM Studio.
 
 This repo ships with **pre-trained safetensor adapter weights compatible with MLX** so you can directly chat with a model that texts similar to me. You can also run the full pipeline to train your own.
 
@@ -49,8 +49,8 @@ This installs:
 ## Step 3: Clone the repo
 
 ```bash
-git clone https://github.com/praneelmohanty/my-voice.git
-cd my-voice
+git clone https://github.com/praneelmohanty/ai-persona.git
+cd ai-persona
 ```
 
 ---
@@ -131,7 +131,7 @@ Edit `training/paths.sh` with the same model, data, and adapter paths.
 
 16. Copy each chat folder into `insta/` in this repo:
     ```
-    my-voice/insta/
+    ai-persona/insta/
     ├── friendname_abc123/
     │   └── message_1.json
     └── anotherfriend_def456/
@@ -143,7 +143,7 @@ Edit `training/paths.sh` with the same model, data, and adapter paths.
 ## Folder structure
 
 ```
-my-voice/
+ai-persona/
 ├── insta/                          # Your Instagram DM exports (gitignored)
 ├── private_data/                   # Processed data (gitignored)
 ├── public_data/                    # Final training data (gitignored)
@@ -213,8 +213,8 @@ You can also run `mlx_lm.generate` directly:
 ```bash
 mlx_lm.generate \
   --model "/Users/yourname/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit" \
-  --adapter-path "/Users/yourname/my-voice/training/adapters_01" \
-  --system-prompt "$(cat /Users/yourname/my-voice/training/system_prompt.txt)" \
+  --adapter-path "/Users/yourname/ai-persona/training/adapters_01" \
+  --system-prompt "$(cat /Users/yourname/ai-persona/training/system_prompt.txt)" \
   --prompt "yo what's up"
 ```
 
