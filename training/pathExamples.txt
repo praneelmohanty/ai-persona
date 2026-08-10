@@ -1,4 +1,4 @@
-export MODEL="/path/to/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit"
-export DATA="/path/to/your/my-voice/public_data"
-export ADAPTER="/path/to/your/my-voice/training/adapters_01"
-export SYSTEM_PROMPT="/path/to/your/my-voice/training/system_prompt.txt"
+export MODEL="/Users/yourname/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit"
+export DATA="/Users/yourname/my-voice/public_data"
+export ADAPTER="/Users/yourname/my-voice/training/adapters_01"
+export SYSTEM_PROMPT="/Users/yourname/my-voice/training/system_prompt.txt"

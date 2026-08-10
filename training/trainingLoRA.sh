@@ -1,4 +1,4 @@
-source /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/training/paths.sh
+source paths.sh
 
 mlx_lm.lora \
   --model "$MODEL" \
@@ -6,7 +6,7 @@ mlx_lm.lora \
   --data "$DATA" \
   --adapter-path "$ADAPTER" \
   --batch-size 4 \
-  --iters 2000 \
+  --iters 400 \
   --learning-rate 1e-5 \
   --steps-per-report 10 \
   --steps-per-eval 50 \

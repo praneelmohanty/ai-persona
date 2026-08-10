@@ -1,4 +1,4 @@
-source /Users/praneel/Desktop/AI\ Learning/praneel-voice/my-voice/training/paths.sh
+source paths.sh
 
 mlx_lm.generate \
   --model "$MODEL" \

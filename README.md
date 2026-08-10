@@ -1,109 +1,257 @@
 # my-voice
 
-Fine-tune a Llama 3.1 8B model on your personal texting style using Instagram DM exports, MLX LoRA, and LM Studio for data filtering.
+My-voice allows you to fine-tune an MLX-based Llama 3.1 8B model on your personal texting style using Instagram DM data, MLX LoRA and LM Studio.
 
-This repo contains the **pipeline scripts only**. Raw chats, processed databanks, training JSONL, and adapter weights stay local and are not committed.
+This repo ships with **pre-trained safetensor adapter weights compatible with MLX** so you can directly chat with a model that texts similar to me. You can also run the full pipeline to train your own.
 
-## Prerequisites
+---
 
-- macOS with Apple Silicon (MLX)
-- Python 3.10+
-- [mlx-lm](https://github.com/ml-explore/mlx-examples/tree/main/llms/mlx_lm) for LoRA training and inference
-- [LM Studio](https://lmstudio.ai/) running locally for the filtering step (`filter_databank.py` uses the OpenAI-compatible API at `http://127.0.0.1:1234/v1`)
-- Base model: [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit) (MLX format)
+## What is needed
 
-Install dependencies:
+- **Mac with Apple Silicon** (M Chipset) — MLX requires Apple Silicon
+- **macOS 14.0+**
+- **Python 3.10+**
+
+| RAM Needed | Quant version |
+|------------|---------------|
+| **16 GB+ RAM** | 16-bit (Unquantised) |
+| **~16 GB RAM** | 8-bit |
+| **~8 GB RAM** | 4-bit |
+
+---
+
+## Step 1: Install LM Studio
+
+1. Go to [lmstudio.ai](https://lmstudio.ai/download) and download LM Studio
+2. Open LM Studio and install it
+3. In LM Studio, search for `Meta-Llama-3.1-8B-Instruct` (the 8-bit MLX version) or any other quantisation
+4. Download it — it will be saved to `~/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit`
+5. Go to the **Developer** tab (second on the left sidebar)
+6. Click the **Start Server** toggle button — this runs at `http://127.0.0.1:1234/v1`
+7. Keep LM Studio running in the background when using the filter script
+
+---
+
+## Step 2: Install Python dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Set up your paths by copying the example and editing it:
+This installs:
+- `mlx-lm` — MLX LLM inference and LoRA training
+- `openai` — used to talk to LM Studio's local server
+- `python-dotenv` — loads path configuration from `paths.env`
+
+---
+
+## Step 3: Clone the repo
 
 ```bash
-cp paths.env.example paths.env
-# Edit paths.env with your actual paths
+git clone https://github.com/praneelmohanty/my-voice.git
+cd my-voice
 ```
 
-Set the base model path if yours differs from the default:
+---
+
+## Step 4: Set up your paths
+
+The scripts use a `paths.env` file to find your model, data, and output directories. Create one from the template:
 
 ```bash
-export MODEL="$HOME/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit"
+cp pathExample.txt paths.env
 ```
+
+Open `paths.env` and replace every `/Users/yourname/` with your actual paths. Here's what each variable does:
+
+| Variable | What it points to |
+|----------|-------------------|
+| `PROJECT_ROOT` | Root of the cloned repo |
+| `INSTA_DIR` | Where your Instagram DM exports live |
+| `PRIVATE_DATA_DIR` | Where processed databanks go |
+| `PUBLIC_DATA_DIR` | Where final training data goes |
+| `INITIAL_TRAIN_DIR` | Where initial train/valid splits go |
+| `TRAINING_DIR` | Where training scripts and adapters live |
+| `MODEL_PATH` | Path to the Llama 3.1 8B model (usually in `~/.lmstudio/models/`) |
+| `ADAPTER_PATH` | Path to the LoRA adapter weights (`training/adapters_01/`) |
+| `SYSTEM_PROMPT_PATH` | Path to `training/system_prompt.txt` |
+| `DATABANK_INPUT` | Output of Step 1 (raw databank) |
+| `DATABANK_OUTPUT` | Parsed Instagram messages |
+| `FILTERED_OUTPUT` | Messages that passed filtering |
+| `REJECTS_OUTPUT` | Messages that were rejected |
+| `AUDIT_OUTPUT` | Full audit log of filter decisions |
+| `TRAIN_INITIAL` | Initial training split |
+| `VALID_INITIAL` | Initial validation split |
+| `TRAIN_FINAL` | Final training data |
+| `VALID_FINAL` | Final validation data |
+| `PROFANITY_RE` | Regex file for profanity detection (create locally) |
+| `PERSONAL_RE` | Regex file for personal content detection (create locally) |
+| `LM_STUDIO_URL` | LM Studio server URL (`http://127.0.0.1:1234/v1`) |
+| `LM_STUDIO_MODEL` | Model name for LM Studio API (`llama-3.1-8b-instruct`) |
+
+Also set up the shell paths for the training scripts:
+
+```bash
+cp training/pathExamples.txt training/paths.sh
+```
+
+Edit `training/paths.sh` with the same model, data, and adapter paths.
+
+---
+
+## Step 5: Download your Instagram data
+
+1. Go to [instagram.com](https://www.instagram.com/) on a browser
+2. Click on the three bars (bottom left) → **Settings**
+3. Go to Accounts Centre
+4. Click on **Your information and permissions** → **Export your information**
+5. Click on **Create export**
+6. Choose your Instagram profile
+7. Choose **Export to device**
+8. Go to **Customise Information** 
+9. Select **Some of your information** → **Clear all**
+10. Scroll down and tick **Messages** — nothing else needed
+11. Choose **Date range: Last year**, **Format: JSON** and **Quality: High** (any quality works, however)
+12. Click **Start export**
+13. Wait for the email from Instagram (can take minutes to hours)
+14. Download the `.zip` file and unzip it
+15. Inside you'll find a `messages/inbox/` folder with chat folders like:
+
+    ```
+    messages/inbox/
+    ├── friendname_abc123/
+    │   ├── message_1.json
+    │   └── photos/
+    ├── anotherfriend_def456/
+    │   ├── message_1.json
+    │   └── photos/
+    └── ...
+    ```
+16. Copy each chat folder into `insta/` in this repo:
+    ```
+    my-voice/insta/
+    ├── friendname_abc123/
+    │   └── message_1.json
+    └── anotherfriend_def456/
+        └── message_1.json
+    ```
+
+---
 
 ## Folder structure
 
 ```
 my-voice/
-├── insta/                  # Raw Instagram DM exports (local only)
-├── private_data/           # Processed databank + filtered messages (local only)
-├── public_data/            # train.jsonl + valid.jsonl (local only)
-├── paths.env               # Your local paths (gitignored)
-├── paths.env.example       # Template for paths.env
+├── insta/                          # Your Instagram DM exports (gitignored)
+├── private_data/                   # Processed data (gitignored)
+├── public_data/                    # Final training data (gitignored)
+├── initial_train/                  # Initial train/valid splits (gitignored)
+├── paths.env                       # Your local paths (gitignored)
+├── pathExample.txt                 # Template for paths.env
+├── requirements.txt                # Python dependencies
 ├── scripts/
-│   ├── build_databank.py         # Step 1: raw JSON → databank
-│   ├── filter_databank.py        # Step 2: filter via LM Studio
-│   ├── build_initial_train.py    # Step 3a: build initial train/valid
-│   ├── build_final_train.py      # Step 3b: refine into final format
-│   ├── profanity_re              # (local only) regex patterns for filtering
-│   ├── personal_re                 # (local only) regex patterns for filtering
-│   └── main.py                   # Step 5: interactive inference
+│   ├── build_databank.py           # Parses raw Instagram JSON
+│   ├── filter_databank.py          # Filters messages via rules + LLM
+│   ├── build_initial_train.py      # Builds train/valid splits
+│   ├── build_final_train.py        # Refines into final format
+│   ├── main.py                     # Interactive chat (Python)
+│   ├── profanity_re                # (local) profanity regex (gitignored)
+│   └── personal_re                 # (local) personal content regex (gitignored)
 └── training/
-    ├── trainingLoRA.sh           # Step 4: LoRA training
-    ├── system_prompt.txt         # (local only) system prompt for inference
-    ├── paths.sh                  # (local only) model/data paths
-    └── adapters_01/              # Trained LoRA weights (local only)
+    ├── trainingLoRA.sh             # LoRA training script
+    ├── generateModel.sh            # Quick generation script
+    ├── paths.sh                    # (local) shell paths (gitignored)
+    ├── pathExamples.txt            # Template for paths.sh
+    ├── system_prompt.txt           # (local) your persona prompt
+    └── adapters_01/                # Pre-trained LoRA weights
+        ├── adapter_config.json     # Generated settings of adapter (gitignored)
+        ├── adapters.safetensors
+        └── 0000200_adapters.safetensors
 ```
 
-## Pipeline
+---
 
-| Step | Command | Output |
-|------|---------|--------|
-| 1 | Export Instagram DMs into `insta/` | `message_*.json` per chat |
-| 2 | `python scripts/build_databank.py` | `private_data/databank.jsonl` |
-| 3 | Start LM Studio, then `python scripts/filter_databank.py` | `private_data/style_bank_hybrid_filtered.jsonl` |
-| 4a | `python scripts/build_initial_train.py` | `initial_train/train.jsonl`, `initial_train/valid.jsonl` |
-| 4b | `python scripts/build_final_train.py` | `public_data/train.jsonl`, `public_data/valid.jsonl` |
-| 5 | `bash training/trainingLoRA.sh` | `training/adapters_01/` |
-| 6 | `python scripts/main.py` | Interactive chat |
+## Use the pre-trained model
 
-### Step 1: Export Instagram DMs
+This repo includes pre-trained LoRA adapter weights trained on my texting style. You can use them immediately.
 
-Use Instagram's data export tool. Place each chat folder under `insta/` so the layout looks like:
+### Option A: Python interactive chat (`main.py`)
 
-```
-insta/
-└── friendname_123456789/
-    └── message_1.json
+```bash
+python scripts/main.py
 ```
 
-### Step 2: Build databank
+This will:
+1. Load the base Llama 3.1 8B model from LM Studio
+2. Load the LoRA adapter from `training/adapters_01/`
+3. Load the system prompt from `training/system_prompt.txt`
+4. Prompt you to enter a message
+5. Generate a response in Praneel's texting style
+
+Example session:
+```
+Enter a message: yo you coming tonight?
+Praneel: bet i'll be there
+```
+
+### Option B: Shell script (`generateModel.sh`)
+
+```bash
+bash training/generateModel.sh
+```
+
+This runs `mlx_lm.generate` directly with the adapter loaded. Edit the `--prompt` flag in the script to change the input message.
+
+### Option C: One-liner in terminal
+
+You can also run `mlx_lm.generate` directly:
+
+```bash
+mlx_lm.generate \
+  --model "/Users/yourname/.lmstudio/models/mlx-community/Meta-Llama-3.1-8B-Instruct-8bit" \
+  --adapter-path "/Users/yourname/my-voice/training/adapters_01" \
+  --system-prompt "$(cat /Users/yourname/my-voice/training/system_prompt.txt)" \
+  --prompt "yo what's up"
+```
+
+Change `--prompt` to whatever message you want to test.
+
+---
+
+## Train your own model
+
+If you want to train on your own texting style, run the full pipeline:
+
+### Step 1: Build databank
 
 ```bash
 python scripts/build_databank.py --me "YourName"
 ```
 
-Reads all `message_*.json` files, skips reactions/attachments/URLs, and writes one JSONL record per message.
+Replace `"YourName"` with your name exactly as it appears in Instagram exports. This reads all `message_*.json` files from `insta/`, skips reactions/attachments/URLs, and writes one JSONL record per message to `private_data/databank.jsonl`.
 
-### Step 3: Filter messages
+### Step 2: Filter messages
 
-Start LM Studio with Llama 3.1 8B Instruct loaded and the local server enabled, then:
+Make sure LM Studio is running with the Llama 3.1 8B model loaded and the local server started, then:
 
 ```bash
 python scripts/filter_databank.py
 ```
 
-Uses rule-based filters plus an LLM pass to keep English, style-useful messages and reject noise, PII, and inappropriate content.
+Uses rule-based filters plus an LLM pass to keep English, style-useful messages and reject noise, PII, Hindi/Hinglish, and inappropriate content. Outputs:
+- `private_data/style_bank_hybrid_filtered.jsonl` — kept messages
+- `private_data/style_bank_hybrid_rejects.jsonl` — rejected messages
+- `private_data/style_bank_hybrid_audit.jsonl` — full audit log
 
-### Step 4a: Build initial training data
+### Step 3a: Build initial training data
 
 ```bash
 python scripts/build_initial_train.py
 ```
 
-Converts filtered messages into chat-format examples (system / user / assistant turns) and splits into train (90%) and valid (10%). Outputs to `initial_train/`.
+Converts filtered messages into chat-format examples (system / user / assistant turns) and splits into train (90%), valid (9%) and examples (50 lines). Outputs to `initial_train/`.
 
-### Step 4b: Build final training data
+### Step 3b: Build final training data
 
 ```bash
 python scripts/build_final_train.py
@@ -111,49 +259,51 @@ python scripts/build_final_train.py
 
 Refines the initial train/valid sets by adding the system prompt and filtering by message length. Outputs to `public_data/`.
 
-Example `train.jsonl` line:
-
-```json
-{"messages": [{"role": "system", "content": "You are chatting in Praneel's personal texting style..."}, {"role": "user", "content": "Friend says: yo you coming?"}, {"role": "assistant", "content": "bet i'll be there"}]}
-```
-
-### Step 5: Train LoRA
+### Step 4: Train LoRA
 
 ```bash
 bash training/trainingLoRA.sh
 ```
 
-Training uses `--mask-prompt` so loss is computed only on assistant (your) replies, not on the system prompt or friend's message. This focuses the adapter on learning your response style.
+This runs `mlx_lm.lora` with these parameters:
+- **Model:** Llama 3.1 8B Instruct (8-bit)
+- **Iterations:** 400
+- **Batch size:** 4
+- **Learning rate:** 1e-5
+- **Steps per report:** 10
+- **Steps per eval:** 50
+- **Save every:** 100
+- **Val batches:** 25
+- **Mask prompt:** enabled (loss computed only on your replies, not the system prompt or friend's message)
 
-### Step 6: Run inference
+Training takes ~15-20 minutes on an M4 Mac. Adapter weights are saved to `training/adapters_01/`. You can terminate the training anytime if the train loss does not go down using ^C. Try increasing or decreasing the parameters until the loss is able to drop to ~0.5-0.9
+
+### Step 5: Chat with your model
 
 ```bash
 python scripts/main.py
 ```
 
-Loads the base model + LoRA adapter and generates a reply using `training/system_prompt.txt`.
+---
 
-## Local-only files (gitignored)
+## Local-only files
 
-These files contain personal or project-specific data and are not committed. Create them locally as needed:
+These files are gitignored and stay on your machine:
 
 | File | Purpose |
 |------|---------|
-| `scripts/profanity_re` | Regex pattern for profanity detection in `filter_databank.py` |
-| `scripts/personal_re` | Regex pattern for intimate content detection in `filter_databank.py` |
-| `training/system_prompt.txt` | System prompt defining your texting persona for inference |
-| `training/paths.sh` | Environment variables for model/data/adapter paths |
+| `paths.env` | Your local path configuration |
+| `training/paths.sh` | Shell path variables for training scripts |
+| `training/system_prompt.txt` | Your persona/system prompt |
+| `training/adapters_01/adapter_config.json` | Adapter settings |
+| `scripts/profanity_re` | Regex pattern for profanity filtering |
+| `scripts/personal_re` | Regex pattern for personal content filtering |
+| `insta/` | Raw Instagram DM exports |
+| `private_data/` | Processed databanks and filter logs |
+| `public_data/` | Final training data |
+| `initial_train/` | Initial train/valid splits |
 
-## Privacy
-
-**Never commit** the following:
-
-- `insta/` — raw DM exports with real names and conversations
-- `private_data/` — processed messages and filter audit logs
-- `public_data/` — training examples derived from your chats
-- `*.safetensors` — trained adapter weights
-
-These paths are listed in `.gitignore`. Before your first push, verify with:
+These are all listed in `.gitignore`. Before your first push, verify with:
 
 ```bash
 git status
@@ -162,5 +312,11 @@ git status
 If any data was previously tracked, remove it from the index without deleting local files:
 
 ```bash
-git rm -r --cached insta/ private_data/ public_data/ training/adapters_01/*.safetensors 2>/dev/null || true
+git rm -r --cached insta/ private_data/ public_data/ paths.env training/paths.sh training/system_prompt.txt 2>/dev/null || true
 ```
+
+---
+
+## License
+
+Personal project. Do not redistribute training data or adapter weights without permission.
