@@ -12,11 +12,11 @@ This repo ships with **pre-trained safetensor adapter weights compatible with ML
 - **macOS 14.0+**
 - **Python 3.10+**
 
-| RAM Needed     | Quant version        |
-| -------------- | -------------------- |
-| **16 GB+ RAM** | 16-bit (Unquantised) |
-| **~16 GB RAM** | 8-bit                |
-| **~8 GB RAM**  | 4-bit                |
+| Quant version        | RAM Needed     |
+| -------------------- | -------------- |
+| 16-bit (Unquantised) | **16 GB+ RAM** |
+| 8-bit                | **~16 GB RAM** |
+| 4-bit                | **~8 GB RAM**  |
 
 ---
 
