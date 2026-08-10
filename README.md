@@ -60,7 +60,7 @@ cd ai-persona
 The scripts use a `paths.env` file to find your model, data, and output directories. Create one from the template:
 
 ```bash
-cp pathExample.txt paths.env
+cp pathExamples.txt paths.env
 ```
 
 Open `paths.env` and replace every `/Users/yourname/` with your actual paths. Here's what each variable does:
@@ -149,7 +149,7 @@ ai-persona/
 ├── public_data/                    # Final training data (gitignored)
 ├── initial_train/                  # Initial train/valid splits (gitignored)
 ├── paths.env                       # Your local paths (gitignored)
-├── pathExample.txt                 # Template for paths.env
+├── pathExamples.txt                 # Template for paths.env
 ├── requirements.txt                # Python dependencies
 ├── scripts/
 │   ├── build_databank.py           # Parses raw Instagram JSON
@@ -325,4 +325,27 @@ git rm -r --cached insta/ private_data/ public_data/ paths.env training/paths.sh
 
 ## License
 
-Personal project. Do not redistribute training data or adapter weights without permission.
+This project is licensed under the [MIT License](LICENSE).
+
+You are free to use, modify, and distribute both the code and adapter weights for any purpose, including commercial use, provided that:
+
+1. **Attribution is included** — credit this project in any public use:
+
+   > Based on [ai-persona](https://github.com/praneelmohanty/ai-persona) by [praneelmohanty](https://github.com/praneelmohanty)
+
+2. **Base model license is respected** — the LoRA adapters are built on top of [Meta Llama 3.1](https://github.com/meta-llama/llama-models), which is subject to the [Llama 3.1 Community License](https://github.com/meta-llama/llama-models/blob/main/LICENSE). If you distribute or use this project commercially, you must comply with Meta's acceptable use policy and attribution requirements.
+
+### What you can do
+
+| Use case                                   | Allowed?                                           |
+| ------------------------------------------ | -------------------------------------------------- |
+| Use the pre-trained adapter weights        | Yes                                                |
+| Train on your own data using this pipeline | Yes                                                |
+| Modify the scripts                         | Yes                                                |
+| Redistribute the code or weights           | Yes                                                |
+| Use commercially                           | Yes (with attribution + Meta's license compliance) |
+
+### What this project does not grant
+
+- No trademark rights — you cannot use the name "ai-persona" or "Praneel" to endorse your product
+- No rights to Meta's Llama 3.1 base model beyond what the Llama 3.1 Community License provides

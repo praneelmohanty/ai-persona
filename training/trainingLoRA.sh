@@ -1,4 +1,4 @@
-source paths.sh
+source ./training/paths.sh #run this script in the ai-persona directory
 
 mlx_lm.lora \
   --model "$MODEL" \

@@ -56,10 +56,10 @@ SAFE_EXPRESSIVE = {
 }
 
 PROFANITY_PATTERN = Path(os.getenv("PROFANITY_RE")).read_text().strip() #Write a RegEx flags to ignore any profanity in your chats
-PROFANITY_RE = re.compile(PROFANITY_PATTERN)
+PROFANITY_RE = re.compile(PROFANITY_PATTERN, re.IGNORECASE)
 
 PERSONAL_PATTERN = Path(os.getenv("PERSONAL_RE")).read_text().strip() #Write a RegEx flags to ignore any personal information in your chats
-PERSONAL_RE = re.compile(PERSONAL_PATTERN)
+PERSONAL_RE = re.compile(PERSONAL_PATTERN, re.IGNORECASE)
 
 ENGLISH_WORDS = {
     "a","about","actually","after","again","all","also","am","an","and","any","are","around","as","at","back",
