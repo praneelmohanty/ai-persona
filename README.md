@@ -12,12 +12,11 @@ This repo ships with **pre-trained safetensor adapter weights compatible with ML
 - **macOS 14.0+**
 - **Python 3.10+**
 
-| RAM Needed | Quant version |
-|------------|---------------|
+| RAM Needed     | Quant version        |
+| -------------- | -------------------- |
 | **16 GB+ RAM** | 16-bit (Unquantised) |
-| **~16 GB RAM** | 8-bit |
-| **~8 GB RAM** | 4-bit |
-| **~4 GB RAM** | 2-bit (not recommended)|
+| **~16 GB RAM** | 8-bit                |
+| **~8 GB RAM**  | 4-bit                |
 
 ---
 
@@ -40,6 +39,7 @@ pip install -r requirements.txt
 ```
 
 This installs:
+
 - `mlx-lm` — MLX LLM inference and LoRA training
 - `openai` — used to talk to LM Studio's local server
 - `python-dotenv` — loads path configuration from `paths.env`
@@ -65,30 +65,30 @@ cp pathExample.txt paths.env
 
 Open `paths.env` and replace every `/Users/yourname/` with your actual paths. Here's what each variable does:
 
-| Variable | What it points to |
-|----------|-------------------|
-| `PROJECT_ROOT` | Root of the cloned repo |
-| `INSTA_DIR` | Where your Instagram DM exports live |
-| `PRIVATE_DATA_DIR` | Where processed databanks go |
-| `PUBLIC_DATA_DIR` | Where final training data goes |
-| `INITIAL_TRAIN_DIR` | Where initial train/valid splits go |
-| `TRAINING_DIR` | Where training scripts and adapters live |
-| `MODEL_PATH` | Path to the Llama 3.1 8B model (usually in `~/.lmstudio/models/`) |
-| `ADAPTER_PATH` | Path to the LoRA adapter weights (`training/adapters_01/`) |
-| `SYSTEM_PROMPT_PATH` | Path to `training/system_prompt.txt` |
-| `DATABANK_INPUT` | Output of Step 1 (raw databank) |
-| `DATABANK_OUTPUT` | Parsed Instagram messages |
-| `FILTERED_OUTPUT` | Messages that passed filtering |
-| `REJECTS_OUTPUT` | Messages that were rejected |
-| `AUDIT_OUTPUT` | Full audit log of filter decisions |
-| `TRAIN_INITIAL` | Initial training split |
-| `VALID_INITIAL` | Initial validation split |
-| `TRAIN_FINAL` | Final training data |
-| `VALID_FINAL` | Final validation data |
-| `PROFANITY_RE` | Regex file for profanity detection (create locally) |
-| `PERSONAL_RE` | Regex file for personal content detection (create locally) |
-| `LM_STUDIO_URL` | LM Studio server URL (`http://127.0.0.1:1234/v1`) |
-| `LM_STUDIO_MODEL` | Model name for LM Studio API (`llama-3.1-8b-instruct`) |
+| Variable             | What it points to                                                 |
+| -------------------- | ----------------------------------------------------------------- |
+| `PROJECT_ROOT`       | Root of the cloned repo                                           |
+| `INSTA_DIR`          | Where your Instagram DM exports live                              |
+| `PRIVATE_DATA_DIR`   | Where processed databanks go                                      |
+| `PUBLIC_DATA_DIR`    | Where final training data goes                                    |
+| `INITIAL_TRAIN_DIR`  | Where initial train/valid splits go                               |
+| `TRAINING_DIR`       | Where training scripts and adapters live                          |
+| `MODEL_PATH`         | Path to the Llama 3.1 8B model (usually in `~/.lmstudio/models/`) |
+| `ADAPTER_PATH`       | Path to the LoRA adapter weights (`training/adapters_01/`)        |
+| `SYSTEM_PROMPT_PATH` | Path to `training/system_prompt.txt`                              |
+| `DATABANK_INPUT`     | Output of Step 1 (raw databank)                                   |
+| `DATABANK_OUTPUT`    | Parsed Instagram messages                                         |
+| `FILTERED_OUTPUT`    | Messages that passed filtering                                    |
+| `REJECTS_OUTPUT`     | Messages that were rejected                                       |
+| `AUDIT_OUTPUT`       | Full audit log of filter decisions                                |
+| `TRAIN_INITIAL`      | Initial training split                                            |
+| `VALID_INITIAL`      | Initial validation split                                          |
+| `TRAIN_FINAL`        | Final training data                                               |
+| `VALID_FINAL`        | Final validation data                                             |
+| `PROFANITY_RE`       | Regex file for profanity detection (create locally)               |
+| `PERSONAL_RE`        | Regex file for personal content detection (create locally)        |
+| `LM_STUDIO_URL`      | LM Studio server URL (`http://127.0.0.1:1234/v1`)                 |
+| `LM_STUDIO_MODEL`    | Model name for LM Studio API (`llama-3.1-8b-instruct`)            |
 
 Also set up the shell paths for the training scripts:
 
@@ -109,7 +109,7 @@ Edit `training/paths.sh` with the same model, data, and adapter paths.
 5. Click on **Create export**
 6. Choose your Instagram profile
 7. Choose **Export to device**
-8. Go to **Customise Information** 
+8. Go to **Customise Information**
 9. Select **Some of your information** → **Clear all**
 10. Scroll down and tick **Messages** — nothing else needed
 11. Choose **Date range: Last year**, **Format: JSON** and **Quality: High** (any quality works, however)
@@ -128,6 +128,7 @@ Edit `training/paths.sh` with the same model, data, and adapter paths.
     │   └── photos/
     └── ...
     ```
+
 16. Copy each chat folder into `insta/` in this repo:
     ```
     my-voice/insta/
@@ -183,6 +184,7 @@ python scripts/main.py
 ```
 
 This will:
+
 1. Load the base Llama 3.1 8B model from LM Studio
 2. Load the LoRA adapter from `training/adapters_01/`
 3. Load the system prompt from `training/system_prompt.txt`
@@ -190,6 +192,7 @@ This will:
 5. Generate a response in Praneel's texting style
 
 Example session:
+
 ```
 Enter a message: yo you coming tonight?
 Praneel: bet i'll be there
@@ -240,6 +243,7 @@ python scripts/filter_databank.py
 ```
 
 Uses rule-based filters plus an LLM pass to keep English, style-useful messages and reject noise, PII, Hindi/Hinglish, and inappropriate content. Outputs:
+
 - `private_data/style_bank_hybrid_filtered.jsonl` — kept messages
 - `private_data/style_bank_hybrid_rejects.jsonl` — rejected messages
 - `private_data/style_bank_hybrid_audit.jsonl` — full audit log
@@ -267,6 +271,7 @@ bash training/trainingLoRA.sh
 ```
 
 This runs `mlx_lm.lora` with these parameters:
+
 - **Model:** Llama 3.1 8B Instruct (8-bit)
 - **Iterations:** 400
 - **Batch size:** 4
@@ -291,18 +296,18 @@ python scripts/main.py
 
 These files are gitignored and stay on your machine:
 
-| File | Purpose |
-|------|---------|
-| `paths.env` | Your local path configuration |
-| `training/paths.sh` | Shell path variables for training scripts |
-| `training/system_prompt.txt` | Your persona/system prompt |
-| `training/adapters_01/adapter_config.json` | Adapter settings |
-| `scripts/profanity_re` | Regex pattern for profanity filtering |
-| `scripts/personal_re` | Regex pattern for personal content filtering |
-| `insta/` | Raw Instagram DM exports |
-| `private_data/` | Processed databanks and filter logs |
-| `public_data/` | Final training data |
-| `initial_train/` | Initial train/valid splits |
+| File                                       | Purpose                                      |
+| ------------------------------------------ | -------------------------------------------- |
+| `paths.env`                                | Your local path configuration                |
+| `training/paths.sh`                        | Shell path variables for training scripts    |
+| `training/system_prompt.txt`               | Your persona/system prompt                   |
+| `training/adapters_01/adapter_config.json` | Adapter settings                             |
+| `scripts/profanity_re`                     | Regex pattern for profanity filtering        |
+| `scripts/personal_re`                      | Regex pattern for personal content filtering |
+| `insta/`                                   | Raw Instagram DM exports                     |
+| `private_data/`                            | Processed databanks and filter logs          |
+| `public_data/`                             | Final training data                          |
+| `initial_train/`                           | Initial train/valid splits                   |
 
 These are all listed in `.gitignore`. Before your first push, verify with:
 
