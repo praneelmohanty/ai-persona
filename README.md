@@ -17,6 +17,7 @@ This repo ships with **pre-trained safetensor adapter weights compatible with ML
 | **16 GB+ RAM** | 16-bit (Unquantised) |
 | **~16 GB RAM** | 8-bit |
 | **~8 GB RAM** | 4-bit |
+| **~4 GB RAM** | 2-bit (not recommended)|
 
 ---
 
