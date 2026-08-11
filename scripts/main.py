@@ -2,8 +2,6 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-
-import mlx.core as mx
 from mlx_lm import load, stream_generate
 from mlx_lm.sample_utils import make_sampler
 
