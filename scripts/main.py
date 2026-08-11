@@ -19,9 +19,10 @@ with open(SYSTEM_PROMPT_PATH) as f:
 
 
 def main():
-    user_msg = input("Enter a message: ")
-
+    print('Model loading...')
     model, tokenizer = load(MODEL, adapter_path=str(ADAPTER))
+
+    user_msg = input("Enter a message: ")
 
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
