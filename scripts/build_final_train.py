@@ -51,11 +51,9 @@ def extract_pairs(input_path, output_path):
                         {"role": "assistant", "content": asst_text}
                     ]
                 })
-
     with open(output_path, "w") as f:
         for p in pairs:
             f.write(json.dumps(p) + "\n")
-
     print(f"Converted {len(lines)} raw conversations → {len(pairs)} clean pairs")
     return pairs
 

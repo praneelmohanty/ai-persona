@@ -17,11 +17,9 @@ SYSTEM_PROMPT_PATH = Path(os.getenv("SYSTEM_PROMPT_PATH"))
 with open(SYSTEM_PROMPT_PATH) as f:
     SYSTEM_PROMPT = f.read().strip()
 
-
 def main():
     print('Model loading...')
     model, tokenizer = load(MODEL, adapter_path=str(ADAPTER))
-
     user_msg = input("Enter a message: ")
 
     messages = [
@@ -32,7 +30,6 @@ def main():
     tokens = tokenizer.apply_chat_template(messages, add_generation_prompt=True, return_dict=False)
     tokens = mx.array(tokens)
     prompt_len = len(tokens)
-
     sampler = make_sampler(temp=0.8, top_p=0.95)
 
     for _ in range(50):
@@ -45,7 +42,6 @@ def main():
         mx.eval(tokens)
 
     generated = tokenizer.decode(tokens[prompt_len:].tolist(), clean_up_tokenization_spaces=False)
-
     generated = (
         generated.replace("â\u0080\u0099", "'")
         .replace("â\u0080\u0093", "-")
@@ -54,10 +50,8 @@ def main():
         .replace("ð\u009f\u00a4·â\u0080\u008dâ\u0099\u0082ï¸\u008f", "🤷\u200d♂️")
         .replace("ð\u009f\u0098\u0082", "😂")
     )
-
     print("Praneel: ", end="")
     print(generated.strip()[:-10])
-
 
 if __name__ == "__main__":
     main()

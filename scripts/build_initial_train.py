@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import json
 import os
 import random
@@ -116,7 +115,6 @@ def build_examples(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
             if turns_added >= MAX_TURNS_PER_CHAT:
                 break
-
     return examples
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:

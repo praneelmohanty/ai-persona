@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import argparse
 import json
 import os
@@ -40,21 +39,18 @@ MEDIA_PLACEHOLDERS = {
     "video note omitted", "you sent an attachment.", "you sent a sticker.", "you deleted this message.",
     "sent a photo", "sent a video", "sent an audio", "shared a reel", "shared a post"
 }
-
 SYSTEM_PATTERNS = [
     "messages and calls are end-to-end encrypted", "changed their phone number", "missed voice call",
     "missed video call", "started an audio call", "started a video call", "this message was deleted",
     "answered on other device", "click to call back", "changed the theme", "reacted to your message",
     "unsent a message", "liked a message", "replied to the story", "shared a story"
 ]
-
 SAFE_EXPRESSIVE = {
     "real", "so real", "for real", "lol", "lmao", "lmaoo", "lmaooo", "haha", "hahaha", "hehe", "heheh",
     "omg", "omgg", "omggg", "bro", "broski", "man", "lowk", "highkey", "ong", "goated", "okie", "okiee",
     "yess", "yesss", "yay", "aw", "aww", "awww", "awwww", "damn", "nice", "okay", "okayy",
     "facts", "crazy", "wild", "true", "same", "sameee", "sameeee", "fr", "rn", "idk", "tbh", "ngl"
 }
-
 PROFANITY_PATTERN = Path(os.getenv("PROFANITY_RE")).read_text().strip() #Write a RegEx flags to ignore any profanity in your chats
 PROFANITY_RE = re.compile(PROFANITY_PATTERN, re.IGNORECASE)
 
@@ -125,13 +121,11 @@ MOJIBAKE_FIXES = {
     "Ã©": "é",
 }
 
-
 def safe_json_loads(s: str) -> dict[str, Any] | None:
     try:
         return json.loads(s)
     except Exception:
         return None
-
 
 def fix_common_mojibake(text: str) -> str:
     out = text
@@ -146,7 +140,6 @@ def fix_common_mojibake(text: str) -> str:
         pass
     return out
 
-
 def strip_invisible_and_control(text: str) -> str:
     cleaned = []
     for ch in text:
@@ -159,7 +152,6 @@ def strip_invisible_and_control(text: str) -> str:
             cleaned.append(ch)
     return "".join(cleaned)
 
-
 def normalize_text(text: str) -> str:
     text = str(text or "")
     text = fix_common_mojibake(text)
@@ -170,27 +162,22 @@ def normalize_text(text: str) -> str:
     text = MULTISPACE_RE.sub(" ", text).strip()
     return text
 
-
 def tokenize(text: str) -> list[str]:
     return TOKEN_RE.findall(text.lower())
-
 
 def english_ratio(tokens: list[str]) -> float:
     if not tokens:
         return 0.0
     return sum(1 for t in tokens if t in ENGLISH_WORDS) / len(tokens)
 
-
 def hindi_ratio(tokens: list[str]) -> float:
     if not tokens:
         return 0.0
     return sum(1 for t in tokens if t in HINDI_MARKERS) / len(tokens)
 
-
 def looks_like_system(text: str) -> bool:
     t = text.lower()
     return any(p in t for p in SYSTEM_PATTERNS)
-
 
 def has_private_info(text: str) -> bool:
     if EMAIL_RE.search(text):
@@ -204,7 +191,6 @@ def has_private_info(text: str) -> bool:
     if DOB_RE.search(text) and len(text) < 40:
         return True
     return False
-
 
 def is_mostly_noise(text: str) -> tuple[bool, str | None]:
     if not text:
@@ -223,7 +209,6 @@ def is_mostly_noise(text: str) -> tuple[bool, str | None]:
         return True, "char_spam"
     return False, None
 
-
 def is_low_signal(tokens: list[str], text: str) -> tuple[bool, str | None]:
     lo = text.lower()
     if lo in {"ok", "okay", "kk", "k", "hmm", "hm", "oh", "ohh", "ohhh", "yes", "no", "nah", "yup", "nope"}:
@@ -238,7 +223,6 @@ def is_low_signal(tokens: list[str], text: str) -> tuple[bool, str | None]:
         return True, "gibberish"
     return False, None
 
-
 def is_obvious_keep(text: str) -> tuple[bool, str | None]:
     t = normalize_text(text)
     lo = t.lower()
@@ -251,7 +235,6 @@ def is_obvious_keep(text: str) -> tuple[bool, str | None]:
     if len(toks) >= 6 and hindi_ratio(toks) == 0 and english_ratio(toks) >= 0.72:
         return True, "likely_clean_english"
     return False, None
-
 
 def is_obvious_reject(text: str) -> tuple[bool, str | None]:
     t = normalize_text(text)
@@ -273,7 +256,6 @@ def is_obvious_reject(text: str) -> tuple[bool, str | None]:
     if low:
         return True, low_reason
     return False, None
-
 
 def llm_classify(text: str) -> dict[str, str]:
     response = client.chat.completions.create(
@@ -299,7 +281,6 @@ def llm_classify(text: str) -> dict[str, str]:
     except Exception:
         return {"decision": "REJECT", "reason": "llm_parse_error"}
 
-
 def process_line(obj: dict[str, Any], line_no: int) -> tuple[str, str, dict[str, Any]]:
     text = normalize_text(obj.get("text", ""))
     obj = dict(obj)
@@ -315,7 +296,6 @@ def process_line(obj: dict[str, Any], line_no: int) -> tuple[str, str, dict[str,
 
     verdict = llm_classify(text)
     return verdict["decision"], verdict["reason"], obj
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -380,7 +360,6 @@ def main() -> None:
         "output_reject": str(args.reject),
         "output_audit": str(args.audit),
     }, ensure_ascii=False, indent=2))
-
 
 if __name__ == "__main__":
     main()

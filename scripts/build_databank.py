@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import argparse
 import json
 import os
@@ -63,9 +62,7 @@ def should_skip_message(msg: dict[str, Any]) -> bool:
         return True
     if URL_RE.search(text):
         return True
-
     return False
-
 
 def parse_message_file(path: Path) -> dict[str, Any] | None:
     try:
@@ -73,14 +70,12 @@ def parse_message_file(path: Path) -> dict[str, Any] | None:
     except Exception:
         return None
 
-
 def collect_json_files(chat_dir: Path) -> list[Path]:
     files = []
     for candidate in sorted(chat_dir.glob("message_*.json")):
         if candidate.is_file():
             files.append(candidate)
     return files
-
 
 def normalize_chat(chat_dir: Path, me_name: str) -> list[dict[str, Any]]:
     normalized: list[dict[str, Any]] = []
@@ -119,10 +114,8 @@ def normalize_chat(chat_dir: Path, me_name: str) -> list[dict[str, Any]]:
                     "file": json_file.name,
                 }
             )
-
     normalized.sort(key=lambda item: item["timestamp_ms"])
     return normalized
-
 
 def build_records(chat_dir: Path, me_name: str) -> list[dict[str, Any]]:
     messages = normalize_chat(chat_dir, me_name)
@@ -143,22 +136,18 @@ def build_records(chat_dir: Path, me_name: str) -> list[dict[str, Any]]:
                 "file": message["file"],
             }
         )
-
     return records
-
 
 def iter_chat_dirs(input_root: Path) -> list[Path]:
     if not input_root.exists():
         return []
     return sorted(path for path in input_root.iterdir() if path.is_dir())
 
-
 def write_jsonl(rows: list[dict[str, Any]], output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as handle:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -194,7 +183,6 @@ def main() -> None:
     print(f"Chats processed: {len(chat_dirs)}")
     print(f"Messages written: {len(all_rows)}")
     print(f"Output: {args.output}")
-
 
 if __name__ == "__main__":
     main()
